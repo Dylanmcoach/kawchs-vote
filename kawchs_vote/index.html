@@ -140,8 +140,8 @@
 
 <header>
   <p class="logo-line">TheGamerQuest × KAWCHS</p>
-  <h1>Vote des Héros<span>L'Ascension du Héros</span></h1>
-  <p class="subtitle">33 héros ont répondu à l'appel. Seuls <strong style="color:var(--gold);font-style:normal;">15</strong> rejoindront le programme.<br>Choisis tes favoris — ton vote compte vraiment.</p>
+  <h1>Vote des Héros</h1>
+  <p class="subtitle">32 héros ont répondu à l'appel. Seuls <strong style="color:var(--gold);font-style:normal;">15</strong> seront sélectionnés.<br>Choisis tes favoris — ton vote compte vraiment.</p>
 </header>
 
 <div class="tabs">
@@ -205,6 +205,7 @@
 
   const MAX = 10;
   const TOTAL = 33;
+  const SKIP_ID = 10;
   let selected = new Set();
   let hasVoted = false;
   let voteCounts = {};
@@ -226,6 +227,7 @@
   // Grid
   const grid = document.getElementById('grid');
   for (let i = 1; i <= TOTAL; i++) {
+    if (i === SKIP_ID) continue;
     const num = String(i).padStart(2, '0');
     const card = document.createElement('div');
     card.className = 'char-card';
@@ -261,6 +263,7 @@
 
   function updateBadges() {
     for (let i = 1; i <= TOTAL; i++) {
+      if (i === SKIP_ID) continue;
       const badge = document.getElementById('badge-' + i);
       const count = voteCounts[i] || 0;
       if (count > 0) { badge.textContent = count + (count > 1 ? ' votes' : ' vote'); badge.classList.add('visible'); }
@@ -270,7 +273,10 @@
 
   function updateLeaderboard() {
     const sorted = [];
-    for (let i = 1; i <= TOTAL; i++) sorted.push({ id: i, count: voteCounts[i] || 0 });
+    for (let i = 1; i <= TOTAL; i++) {
+      if (i === SKIP_ID) continue;
+      sorted.push({ id: i, count: voteCounts[i] || 0 });
+    }
     sorted.sort((a, b) => b.count - a.count);
     const withVotes = sorted.filter(c => c.count > 0);
     const max = withVotes[0]?.count || 1;
